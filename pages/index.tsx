@@ -3,12 +3,6 @@ import CoffeeShopsList from "../components/CoffeeShopsList";
 import PageHeader from "../components/PageHeader";
 
 export default function Home() {
-  const teste = [];
-
-  for (var i = 0; i <= 25; i++) {
-    teste.push(i);
-  }
-
   return (
     <div className="bg-coffee min-h-screen bg-cover bg-fixed bg-no-repeat flex flex-col items-center">
       <div className="min-h-screen w-full max-w-[1100px] flex flex-col">
