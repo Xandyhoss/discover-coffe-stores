@@ -6,6 +6,30 @@ body {
   @apply text-white bg-gray-900;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  @apply bg-gray-800;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-blue-800 transition-colors;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-blue-900 transition-colors;
+}
+
+.masked-img {
+  mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+}
+
 @layer base {
   @font-face {
     font-family: "Roboto";

@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function coffeeStore() {
+export default function CoffeeStore() {
   const router = useRouter();
   const { id } = router.query;
   return (
