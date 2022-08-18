@@ -5,3 +5,13 @@
 body {
   @apply text-white bg-gray-900;
 }
+
+@layer base {
+  @font-face {
+    font-family: "Roboto";
+    src: url("/fonts/Roboto-Regular.ttf");
+    font-weight: 400;
+    font-display: swap;
+    font-style: normal;
+  }
+}

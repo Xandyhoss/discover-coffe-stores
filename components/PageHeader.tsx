@@ -10,7 +10,9 @@ export default function PageHeader() {
       <h1 className="text-6xl font-bold text-center">
         <span className="text-blue-300">Coffee</span> Discover
       </h1>
-      <p className="font-bold mt-2">discover coffee shops near you!</p>
+      <p className="font-bold mt-2 font-roboto">
+        discover coffee shops near you!
+      </p>
       <button
         className="bg-blue-600 rounded-md p-2 mt-8 hover:bg-blue-400 hover:font-bold transition-all"
         onClick={handleSearchButton}

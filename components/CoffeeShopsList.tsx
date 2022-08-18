@@ -17,7 +17,7 @@ export default function CoffeeShopsList() {
     "Ground Up Cafe",
   ];
   return (
-    <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+    <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 animate-enter">
       {shopNames.map((shop, index) => {
         return <CoffeeShopCard name={shop} key={index} />;
       })}
