@@ -1,12 +1,14 @@
 import CoffeeShopCard from "./CoffeeShopCard";
 type PropsType = {
   coffeeShops: {
-    id: number;
+    fsq_id: string;
     name: string;
-    imgUrl: string;
-    websiteUrl: string;
-    address: string;
-    neighbourhood: string;
+    link: string;
+    location: {
+      address: string;
+      formatted_address: string;
+      postcode: string;
+    };
   }[];
 };
 export default function CoffeeShopsList(props: PropsType) {
@@ -20,7 +22,7 @@ export default function CoffeeShopsList(props: PropsType) {
 
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 ">
         {props.coffeeShops.map((shop) => {
-          return <CoffeeShopCard shop={shop} key={shop.id} />;
+          return <CoffeeShopCard shop={shop} key={shop.fsq_id} />;
         })}
       </div>
     </div>
