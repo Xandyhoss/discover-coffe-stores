@@ -2,7 +2,7 @@
 
 [![GitHub Stars](https://img.shields.io/github/stars/Xandyhoss/discover-coffe-stores)](https://github.com/Xandyhoss/discover-coffe-stores/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/Xandyhoss/discover-coffe-stores)](https://github.com/Xandyhoss/discover-coffe-stores/issues)
-[![Live Demo](https://img.shields.io/badge/live-demo-green)](https://albionplayersearch.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/live-demo-green)](https://discover-coffe-stores-nine.vercel.app/)
 
 Discover Coffee Shop is an app where you can find coffee shops nearby your current location. It is my first project using Next.js.
 
