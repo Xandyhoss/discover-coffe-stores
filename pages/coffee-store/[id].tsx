@@ -4,23 +4,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Star } from "phosphor-react";
-import { useEffect } from "react";
 import Footer from "../../components/Footer";
-import { fetchCoffeeStores } from "../../lib/coffeeStores";
+import {
+  fetchCoffeeStoreById,
+  fetchCoffeeStores,
+} from "../../lib/coffeeStores";
+import { coffeeShop } from "../../utils/types";
 
 export async function getStaticProps({ params }) {
-  const coffeeShops = await fetchCoffeeStores();
+  const coffeeShops = await fetchCoffeeStoreById(params.id);
   return {
     props: {
-      coffeeShops: coffeeShops.find(
-        (coffeeStore) => coffeeStore.fsq_id.toString() === params.id
-      ),
+      coffeeShops,
     },
   };
 }
 
 export async function getStaticPaths() {
-  const coffeeShops = await fetchCoffeeStores();
+  const coffeeShops = await fetchCoffeeStores("-17.542411,-39.739676");
   const paths = coffeeShops.map((coffeeStore) => {
     return {
       params: {
@@ -35,16 +36,7 @@ export async function getStaticPaths() {
 }
 
 type PropsType = {
-  coffeeShops: {
-    fsq_id: string;
-    name: string;
-    link: string;
-    location: {
-      address: string;
-      formatted_address: string;
-      postcode: string;
-    };
-  };
+  coffeeShops: coffeeShop;
 };
 
 export default function CoffeeStore(props: PropsType) {
@@ -56,11 +48,12 @@ export default function CoffeeStore(props: PropsType) {
     );
   }
 
-  const { name, location } = props.coffeeShops;
+  const { name, location, imgUrl } = props.coffeeShops;
 
   const handleUpvote = () => {
     console.log("upvote handled");
   };
+
   return (
     <div className="bg-coffee min-h-screen bg-cover bg-fixed bg-no-repeat flex flex-col items-center p-10">
       <div className="animate-enter flex flex-col items-center">
@@ -78,7 +71,7 @@ export default function CoffeeStore(props: PropsType) {
         <div className="h-52 w-52 mt-4 overflow-hidden rounded-lg hover:scale-[1.02] transition-all">
           <a target={"_blank"}>
             <Image
-              src={"/img/background.jpg"}
+              src={imgUrl}
               alt={name}
               height={208}
               width={208}

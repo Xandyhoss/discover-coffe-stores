@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import useTrackLocation from "../hooks/use-track-location";
 
-export default function PageHeader() {
-  const handleSearchButton = () => {
-    loading ? setLoading(false) : setLoading(true);
+type PropsType = {
+  customLocation: Function;
+};
+
+export default function PageHeader(props: PropsType) {
+  const { handleTrackLocation, isLoading } = useTrackLocation();
+
+  const handleSearchButton = (): void => {
+    handleTrackLocation();
+    props.customLocation();
   };
-  const [loading, setLoading] = useState(false);
   return (
     <div className="flex flex-col justify-center items-center animate-enter">
       <h1 className="text-6xl font-bold text-center">
@@ -17,7 +24,7 @@ export default function PageHeader() {
         className="bg-blue-600 rounded-md p-2 mt-8 hover:bg-blue-400 hover:font-bold transition-all"
         onClick={handleSearchButton}
       >
-        {loading ? "loading" : "search nearby stores"}
+        {isLoading ? "loading" : "search nearby stores"}
       </button>
     </div>
   );
