@@ -1,19 +1,26 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { ACTION_TYPES, StoreContext } from "../contexts/storeContext";
 
 export default function useTrackLocation(): {
-  latLong: string;
+  // latLong: string;
   handleTrackLocation: () => void;
   locationErrorMessage: string;
   isLoading: boolean;
 } {
   const [locationErrorMessage, setLocationErrorMessage] = useState("");
-  const [latLong, setLatLong] = useState("");
+  // const [latLong, setLatLong] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { dispatch } = useContext(StoreContext);
 
   const success = (position: GeolocationPosition) => {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
-    setLatLong(`${latitude},${longitude}`);
+    // setLatLong(`${latitude},${longitude}`);
+    dispatch({
+      type: ACTION_TYPES.SET_LAT_LONG,
+      payload: { latLong: `${latitude},${longitude}` },
+    });
+
     setLocationErrorMessage("");
     setIsLoading(false);
   };
@@ -32,7 +39,7 @@ export default function useTrackLocation(): {
     }
   };
   return {
-    latLong,
+    // latLong,
     handleTrackLocation,
     locationErrorMessage,
     isLoading,

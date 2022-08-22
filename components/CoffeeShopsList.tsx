@@ -3,7 +3,6 @@ import CoffeeShopCard from "./CoffeeShopCard";
 type PropsType = {
   coffeeShops: coffeeShop[];
   nearby: boolean;
-  latLong: string;
 };
 export default function CoffeeShopsList(props: PropsType) {
   return (
@@ -20,9 +19,7 @@ export default function CoffeeShopsList(props: PropsType) {
 
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 ">
         {props.coffeeShops.map((shop) => {
-          return (
-            <CoffeeShopCard shop={shop} key={shop.fsq_id} latLong={props.latLong} />
-          );
+          return <CoffeeShopCard shop={shop} key={shop.fsq_id} />;
         })}
       </div>
     </div>

@@ -1,10 +1,11 @@
 import { coffeeShop } from "../utils/types";
 
 export const fetchCoffeeStores = async (
-  latLong: string
+  latLong: string = "-17.542411,-39.739676",
+  limit: number = 8
 ): Promise<coffeeShop[]> => {
   const response = await fetch(
-    `https://api.foursquare.com/v3/places/search?ll=${latLong}&query=cafe&limit=8&sort=DISTANCE`,
+    `https://api.foursquare.com/v3/places/search?ll=${latLong}&query=cafe&limit=${limit}&sort=DISTANCE`,
     {
       headers: {
         Authorization: process.env.API_TOKEN,
@@ -25,15 +26,13 @@ export const fetchCoffeeStores = async (
   return resultsWithImages;
 };
 
-export const fetchCoffeeStoreById = async (
-  id: string
-): Promise<coffeeShop[]> => {
+export const fetchCoffeeStoreById = async (id: string): Promise<coffeeShop> => {
   const response = await fetch(`https://api.foursquare.com/v3/places/${id}`, {
     headers: {
       Authorization: process.env.API_TOKEN,
     },
   });
-  const result = await response.json();
+  const result = (await response.json()) as coffeeShop;
 
   result.imgUrl = await fetchCoffeeStoreImage(result.fsq_id);
 

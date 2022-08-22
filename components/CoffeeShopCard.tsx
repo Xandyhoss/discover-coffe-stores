@@ -4,12 +4,11 @@ import { coffeeShop } from "../utils/types";
 
 type PropsType = {
   shop: coffeeShop;
-  latLong: string;
 };
 
 export default function CoffeeShopCard(props: PropsType) {
   return (
-    <Link href={`/coffee-store/${props.shop.fsq_id}?latLong=${props.latLong}`}>
+    <Link href={`/coffee-store/${props.shop.fsq_id}`}>
       <div className="flex flex-col h-[150px] bg-gray-300 rounded-lg hover:scale-[1.02] hover:bg-opacity-95 transition-all justify-center items-end p-5 cursor-pointer relative overflow-hidden shadow-lg">
         <p className="z-[1] text-xl text-black text-right font-bold font-roboto">
           {props.shop.name}

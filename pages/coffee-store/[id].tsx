@@ -21,7 +21,7 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  const coffeeShops = await fetchCoffeeStores("-17.542411,-39.739676");
+  const coffeeShops = await fetchCoffeeStores();
   const paths = coffeeShops.map((coffeeStore) => {
     return {
       params: {

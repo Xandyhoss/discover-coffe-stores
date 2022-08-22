@@ -1,14 +1,15 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CoffeeShopsList from "../components/CoffeeShopsList";
 import Footer from "../components/Footer";
 import PageHeader from "../components/PageHeader";
 import useTrackLocation from "../hooks/use-track-location";
 import { fetchCoffeeStores } from "../lib/coffeeStores";
 import { coffeeShop } from "../utils/types";
+import { ACTION_TYPES, StoreContext } from "../contexts/storeContext";
 
 export async function getStaticProps() {
-  const coffeeShops = await fetchCoffeeStores("-17.542411,-39.739676");
+  const coffeeShops = await fetchCoffeeStores();
   return {
     props: { coffeeShops },
   };
@@ -19,31 +20,48 @@ type PropsType = {
 };
 
 export default function Home(props: PropsType) {
-  const [userCustomShops, setUserCustomShops] = useState<coffeeShop[]>([]);
-  const { handleTrackLocation, latLong, locationErrorMessage } =
-    useTrackLocation();
+  // const [userCustomShops, setUserCustomShops] = useState<coffeeShop[]>([]);
+  const { handleTrackLocation, locationErrorMessage } = useTrackLocation();
 
-  const getNearbyShops = async (latLong) => {
-    try {
-      const response = await fetch(`/api/fetchShops/`, {
-        method: "POST",
-        body: JSON.stringify({ latLong }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      setUserCustomShops(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { state, dispatch } = useContext(StoreContext);
+  const { coffeeStores, latLong } = state;
+
+  //CORS PROBLEM, SOLVED USING BUILT IN NEXT NODE.JS SERVER. IF NOT, THE FUNCTION BELOW WOULD WORK
+
+  // const getNearbyShops = async (latLong) => {
+  //   try {
+  //     const data = await fetchCoffeeStores(latLong);
+  //     setUserCustomShops(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
+    const getNearbyShops = async (latLong: string, limit: number) => {
+      try {
+        const response = await fetch(`/api/fetchShops/`, {
+          method: "POST",
+          body: JSON.stringify({ latLong, limit }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = (await response.json()) as coffeeShop[];
+        dispatch({
+          type: ACTION_TYPES.SET_COFFEE_STORES,
+          payload: {
+            coffeeStores: data,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
     if (latLong) {
-      getNearbyShops(latLong);
+      getNearbyShops(latLong, 16);
     }
-  }, [latLong]);
+  }, [dispatch, latLong]);
 
   return (
     <div className="bg-coffee min-h-screen bg-cover bg-fixed bg-no-repeat flex flex-col items-center">
@@ -62,18 +80,10 @@ export default function Home(props: PropsType) {
             )}
           </div>
           <div className="mt-10 w-full">
-            {userCustomShops.length > 0 ? (
-              <CoffeeShopsList
-                coffeeShops={userCustomShops}
-                nearby={true}
-                latLong={latLong}
-              />
+            {coffeeStores.length > 0 ? (
+              <CoffeeShopsList coffeeShops={coffeeStores} nearby={true} />
             ) : (
-              <CoffeeShopsList
-                coffeeShops={props.coffeeShops}
-                nearby={false}
-                latLong={"-17.542411,-39.739676"}
-              />
+              <CoffeeShopsList coffeeShops={props.coffeeShops} nearby={false} />
             )}
           </div>
         </main>
