@@ -1,17 +1,18 @@
-import { useEffect } from "react";
-import useTrackLocation from "../hooks/use-track-location";
+import { useContext } from 'react'
+import { StoreContext } from '../contexts/storeContext'
+import useTrackLocation from '../hooks/use-track-location'
 
 type PropsType = {
-  customLocation: Function;
-};
+  customLocation: Function
+}
 
 export default function PageHeader(props: PropsType) {
-  const { handleTrackLocation, isLoading } = useTrackLocation();
+  const { state } = useContext(StoreContext)
+  const { loading } = state
 
   const handleSearchButton = (): void => {
-    handleTrackLocation();
-    props.customLocation();
-  };
+    props.customLocation()
+  }
   return (
     <div className="flex flex-col justify-center items-center animate-enter">
       <h1 className="text-6xl font-bold text-center">
@@ -24,8 +25,8 @@ export default function PageHeader(props: PropsType) {
         className="bg-blue-600 rounded-md p-2 mt-8 hover:bg-blue-400 hover:font-bold transition-all"
         onClick={handleSearchButton}
       >
-        {isLoading ? "loading" : "search nearby stores"}
+        {loading ? 'loading' : 'search nearby stores'}
       </button>
     </div>
-  );
+  )
 }

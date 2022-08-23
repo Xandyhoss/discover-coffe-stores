@@ -7,6 +7,7 @@ import useTrackLocation from "../hooks/use-track-location";
 import { fetchCoffeeStores } from "../lib/coffeeStores";
 import { coffeeShop } from "../utils/types";
 import { ACTION_TYPES, StoreContext } from "../contexts/storeContext";
+import Loading from "../components/Loading";
 
 export async function getStaticProps() {
   const coffeeShops = await fetchCoffeeStores();
@@ -24,7 +25,7 @@ export default function Home(props: PropsType) {
   const { handleTrackLocation, locationErrorMessage } = useTrackLocation();
 
   const { state, dispatch } = useContext(StoreContext);
-  const { coffeeStores, latLong } = state;
+  const { coffeeStores, latLong, loading } = state;
 
   //CORS PROBLEM, SOLVED USING BUILT IN NEXT NODE.JS SERVER. IF NOT, THE FUNCTION BELOW WOULD WORK
 
@@ -54,9 +55,7 @@ export default function Home(props: PropsType) {
             coffeeStores: data,
           },
         });
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     };
     if (latLong) {
       getNearbyShops(latLong, 16);
@@ -64,31 +63,37 @@ export default function Home(props: PropsType) {
   }, [dispatch, latLong]);
 
   return (
-    <div className="bg-coffee min-h-screen bg-cover bg-fixed bg-no-repeat flex flex-col items-center">
-      <div className="min-h-screen w-full max-w-[1100px] flex flex-col">
-        <Head>
-          <title>Coffee Discover</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <main className="flex flex-col items-center justify-center p-10 pb-14 h-auto">
-          <div>
-            <PageHeader customLocation={handleTrackLocation} />
-            {locationErrorMessage && (
-              <p className="mt-2 transition-all">
-                Something went wrong: {locationErrorMessage}
-              </p>
-            )}
-          </div>
-          <div className="mt-10 w-full">
-            {coffeeStores.length > 0 ? (
-              <CoffeeShopsList coffeeShops={coffeeStores} nearby={true} />
-            ) : (
-              <CoffeeShopsList coffeeShops={props.coffeeShops} nearby={false} />
-            )}
-          </div>
-        </main>
-        <Footer />
+    <>
+      {loading && <Loading />}
+      <div className="bg-coffee min-h-screen bg-cover bg-fixed bg-no-repeat flex flex-col items-center">
+        <div className="min-h-screen w-full max-w-[1100px] flex flex-col">
+          <Head>
+            <title>Coffee Discover</title>
+            <link rel="icon" href="/favicon.ico" />
+          </Head>
+          <main className="flex flex-col items-center justify-center p-10 pb-14 h-auto">
+            <div>
+              <PageHeader customLocation={handleTrackLocation} />
+              {locationErrorMessage && (
+                <p className="mt-2 transition-all">
+                  Something went wrong: {locationErrorMessage}
+                </p>
+              )}
+            </div>
+            <div className="mt-10 w-full">
+              {coffeeStores.length > 0 ? (
+                <CoffeeShopsList coffeeShops={coffeeStores} nearby={true} />
+              ) : (
+                <CoffeeShopsList
+                  coffeeShops={props.coffeeShops}
+                  nearby={false}
+                />
+              )}
+            </div>
+          </main>
+          <Footer />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -5,12 +5,20 @@ export default function useTrackLocation(): {
   // latLong: string;
   handleTrackLocation: () => void;
   locationErrorMessage: string;
-  isLoading: boolean;
+  // isLoading: boolean
 } {
   const [locationErrorMessage, setLocationErrorMessage] = useState("");
   // const [latLong, setLatLong] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { dispatch } = useContext(StoreContext);
+  // const [isLoading, setIsLoading] = useState(false);
+  const { dispatch, state } = useContext(StoreContext);
+  const { loading } = state;
+
+  const setLoading = (bool: boolean) => {
+    dispatch({
+      type: ACTION_TYPES.SET_LOADING,
+      payload: { loading: bool },
+    });
+  };
 
   const success = (position: GeolocationPosition) => {
     const latitude = position.coords.latitude;
@@ -22,18 +30,18 @@ export default function useTrackLocation(): {
     });
 
     setLocationErrorMessage("");
-    setIsLoading(false);
+    setLoading(false);
   };
   const error = (position: GeolocationPositionError) => {
     setLocationErrorMessage("Unable to retrieve your location");
-    setIsLoading(false);
+    setLoading(false);
   };
 
   const handleTrackLocation = (): void => {
-    setIsLoading(true);
+    setLoading(true);
     if (!navigator.geolocation) {
       setLocationErrorMessage("Geolocation is disabled on your browser");
-      setIsLoading(false);
+      setLoading(false);
     } else {
       navigator.geolocation.getCurrentPosition(success, error);
     }
@@ -42,6 +50,6 @@ export default function useTrackLocation(): {
     // latLong,
     handleTrackLocation,
     locationErrorMessage,
-    isLoading,
+    // isLoading,
   };
 }
