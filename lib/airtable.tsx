@@ -1,7 +1,7 @@
 const Airtable = require("airtable");
 
-Airtable.configure({ apiKey: process.env.AIRTABLE_API_KEY });
-const base = Airtable.base(process.env.AIRTABLE_BASE_KEY);
+Airtable.configure({ apiKey: process.env.NEXT_PUBLIC_AIRTABLE_API_KEY });
+const base = Airtable.base(process.env.NEXT_PUBLIC_AIRTABLE_BASE_KEY);
 
 const table = base("coffeeStores");
 

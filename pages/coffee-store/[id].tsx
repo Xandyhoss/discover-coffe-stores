@@ -54,9 +54,6 @@ export default function CoffeeStore(props: PropsType) {
         const { fsq_id, name, location, imgUrl } = coffeeStore as coffeeShop;
         const response = await fetch("/api/createCoffeeStore", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
           body: JSON.stringify({
             id: fsq_id,
             name,
@@ -65,6 +62,9 @@ export default function CoffeeStore(props: PropsType) {
             votes: 0,
             imgUrl,
           }),
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
         const dbCoffeeStore = await response.json();
       } catch (err) {
