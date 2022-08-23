@@ -64,7 +64,6 @@ export default function Home(props: PropsType) {
 
   return (
     <>
-      {loading && <Loading />}
       <div className="bg-coffee min-h-screen bg-cover bg-fixed bg-no-repeat flex flex-col items-center">
         <div className="min-h-screen w-full max-w-[1100px] flex flex-col">
           <Head>
