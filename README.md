@@ -24,8 +24,9 @@ Clone this repo to your desktop, access the folder with `cd discover-coffe-store
 
 ```
 API_TOKEN=YOUR_API_KEY(You need to create an account at foursquare.org to use their PlacesAPI) 
-LOCAL_API=http://localhost:3000/api
-FOUR_SQUARE_API=https://api.foursquare.com/v3/places
+
 ```
+<!-- LOCAL_API=http://localhost:3000/api
+FOUR_SQUARE_API=https://api.foursquare.com/v3/places -->
 
 Now you can run `npm run dev` to start the project locally on `http://localhost:3000`
