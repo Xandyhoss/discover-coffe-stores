@@ -5,7 +5,6 @@ export default async function createCoffeeStore(req, res) {
     const { id, name, address, cep, imgUrl } = req.body;
     try {
       if (id) {
-        console.log(`id=${id}`);
         const findCoffeeStoreRecords = await table
           .select({
             filterByFormula: `id='${id}'`,

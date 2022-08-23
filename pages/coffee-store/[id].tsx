@@ -4,8 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Star } from "phosphor-react";
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import Footer from "../../components/Footer";
+import { StoreContext } from "../../contexts/storeContext";
 import {
   fetchCoffeeStoreById,
   fetchCoffeeStores,
@@ -13,10 +14,10 @@ import {
 import { coffeeShop } from "../../utils/types";
 
 export async function getStaticProps({ params }) {
-  const coffeeShop = await fetchCoffeeStoreById(params.id);
+  const coffeeShops = await fetchCoffeeStoreById(params.id);
   return {
     props: {
-      coffeeShop,
+      coffeeShops,
     },
   };
 }
@@ -37,42 +38,61 @@ export async function getStaticPaths() {
 }
 
 type PropsType = {
-  coffeeShop: coffeeShop;
+  coffeeShops: coffeeShop;
 };
 
 export default function CoffeeStore(props: PropsType) {
   const router = useRouter();
-  const { fsq_id, name, location, imgUrl } = props.coffeeShop;
+  const id = router.query.id;
+  const [coffeeStore, setCoffeeStore] = useState(props.coffeeShops || {});
+  const {
+    state: { coffeeStores },
+  } = useContext(StoreContext);
 
   useEffect(() => {
-    const handleCreateCoffeeStore = async () => {
+    const handleCreateCoffeeStore = async (coffeeStore) => {
       try {
+        const { fsq_id, name, location, imgUrl } = coffeeStore as coffeeShop;
         const response = await fetch("/api/createCoffeeStore", {
           method: "POST",
-          body: JSON.stringify({
-            id: fsq_id,
-            name: name,
-            address: location.address,
-            cep: location.postcode,
-            imgUrl: imgUrl,
-          }),
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            id,
+            name,
+            address: location.address,
+            cep: location.postcode,
+            votes: 0,
+            imgUrl,
+          }),
         });
-        const coffeeStore = await response.json();
-      } catch (error) {
-        console.log(error);
+        const dbCoffeeStore = await response.json();
+      } catch (err) {
+        console.error("Error creating coffee store", err);
       }
     };
-    handleCreateCoffeeStore();
-  }, [fsq_id, imgUrl, location.address, location.postcode, name]);
+
+    if (props.coffeeShops === undefined) {
+      if (coffeeStores.length > 0) {
+        const findCoffeeStoreById = coffeeStores.find((coffeeStore) => {
+          return coffeeStore.id.toString() === id; //dynamic id
+        });
+        setCoffeeStore(findCoffeeStoreById);
+        handleCreateCoffeeStore(findCoffeeStoreById);
+      }
+    } else {
+      handleCreateCoffeeStore(props.coffeeShops);
+    }
+  }, [id, coffeeStores, props.coffeeShops]);
 
   if (router.isFallback) {
     return (
       <div className="w-full flex justify-center items-center">Loading</div>
     );
   }
+
+  const { name, location, imgUrl } = props.coffeeShops;
 
   const handleUpvote = () => {
     console.log("upvote handled");
