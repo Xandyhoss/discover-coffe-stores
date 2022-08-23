@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Star } from "phosphor-react";
+import { useEffect } from "react";
 import Footer from "../../components/Footer";
 import {
   fetchCoffeeStoreById,
@@ -12,10 +13,10 @@ import {
 import { coffeeShop } from "../../utils/types";
 
 export async function getStaticProps({ params }) {
-  const coffeeShops = await fetchCoffeeStoreById(params.id);
+  const coffeeShop = await fetchCoffeeStoreById(params.id);
   return {
     props: {
-      coffeeShops,
+      coffeeShop,
     },
   };
 }
@@ -36,19 +37,42 @@ export async function getStaticPaths() {
 }
 
 type PropsType = {
-  coffeeShops: coffeeShop;
+  coffeeShop: coffeeShop;
 };
 
 export default function CoffeeStore(props: PropsType) {
   const router = useRouter();
+  const { fsq_id, name, location, imgUrl } = props.coffeeShop;
+
+  useEffect(() => {
+    const handleCreateCoffeeStore = async () => {
+      try {
+        const response = await fetch("/api/createCoffeeStore", {
+          method: "POST",
+          body: JSON.stringify({
+            id: fsq_id,
+            name: name,
+            address: location.address,
+            cep: location.postcode,
+            imgUrl: imgUrl,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const coffeeStore = await response.json();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    handleCreateCoffeeStore();
+  }, [fsq_id, imgUrl, location.address, location.postcode, name]);
 
   if (router.isFallback) {
     return (
       <div className="w-full flex justify-center items-center">Loading</div>
     );
   }
-
-  const { name, location, imgUrl } = props.coffeeShops;
 
   const handleUpvote = () => {
     console.log("upvote handled");

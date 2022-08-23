@@ -5,9 +5,10 @@ export default async function createCoffeeStore(req, res) {
     const { id, name, address, cep, imgUrl } = req.body;
     try {
       if (id) {
+        console.log(`id=${id}`);
         const findCoffeeStoreRecords = await table
           .select({
-            filterByFormula: `id=${id}`,
+            filterByFormula: `id='${id}'`,
           })
           .firstPage();
 
@@ -16,7 +17,13 @@ export default async function createCoffeeStore(req, res) {
           res.json(records);
         } else {
           if (name) {
-            const createdRecords = await createStore(id, name, address, cep, imgUrl);
+            const createdRecords = await createStore(
+              id,
+              name,
+              address,
+              cep,
+              imgUrl
+            );
             const records = getMinifiedRecords(createdRecords);
             res.json(records);
           } else {
