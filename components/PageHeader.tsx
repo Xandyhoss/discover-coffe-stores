@@ -16,7 +16,7 @@ export default function PageHeader(props: PropsType) {
   return (
     <div className="flex flex-col justify-center items-center animate-enter">
       <h1 className="text-6xl font-bold text-center">
-        <span className="text-blue-300">Coffee</span> Discover
+        <span className="text-blue-300">Boffee</span> Discover
       </h1>
       <p className="font-bold mt-2 font-roboto">
         discover coffee shops near you!
