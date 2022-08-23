@@ -44,7 +44,6 @@ type PropsType = {
 export default function CoffeeStore(props: PropsType) {
   const router = useRouter();
   const id = router.query.id;
-  const [coffeeStore, setCoffeeStore] = useState(props.coffeeShops || {});
   const {
     state: { coffeeStores },
   } = useContext(StoreContext);
@@ -59,7 +58,7 @@ export default function CoffeeStore(props: PropsType) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id,
+            id: fsq_id,
             name,
             address: location.address,
             cep: location.postcode,
@@ -78,7 +77,6 @@ export default function CoffeeStore(props: PropsType) {
         const findCoffeeStoreById = coffeeStores.find((coffeeStore) => {
           return coffeeStore.id.toString() === id; //dynamic id
         });
-        setCoffeeStore(findCoffeeStoreById);
         handleCreateCoffeeStore(findCoffeeStoreById);
       }
     } else {
