@@ -6,7 +6,12 @@ const base = Airtable.base(process.env.NEXT_PUBLIC_AIRTABLE_BASE_KEY);
 const table = base("coffeeStores");
 
 const getMinifiedRecords = (data) => {
-  return data.map((record) => record.fields);
+  return data.map((record) => {
+    return {
+      recordId: record.id,
+      ...record.fields,
+    };
+  });
 };
 
 const createStore = async (id, name, address, cep, imgUrl) => {
@@ -25,4 +30,13 @@ const createStore = async (id, name, address, cep, imgUrl) => {
   return data;
 };
 
-export { table, getMinifiedRecords, createStore };
+const findRecordByFilter = async (id) => {
+  const findCoffeeStoreRecords = await table
+    .select({
+      filterByFormula: `id='${id}'`,
+    })
+    .firstPage();
+
+  return getMinifiedRecords(findCoffeeStoreRecords);
+};
+export { table, getMinifiedRecords, createStore, findRecordByFilter };

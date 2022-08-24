@@ -12,6 +12,7 @@ import {
   fetchCoffeeStores,
 } from "../../lib/coffeeStores";
 import { coffeeShop } from "../../utils/types";
+import useSWR from "swr";
 
 export async function getStaticProps({ params }) {
   const coffeeShops = await fetchCoffeeStoreById(params.id);
@@ -48,6 +49,18 @@ export default function CoffeeStore(props: PropsType) {
     state: { coffeeStores },
   } = useContext(StoreContext);
 
+  const [coffeeStoreVotes, setCoffeeStoreVotes] = useState(0);
+  const [coffeeStore, setCoffeeStore] = useState(props.coffeeShops || {});
+
+  const fetcher = async (url) => await fetch(url).then((res) => res.json());
+  const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setCoffeeStoreVotes(data[0].votes);
+    }
+  }, [data]);
+
   useEffect(() => {
     const handleCreateCoffeeStore = async (coffeeStore) => {
       try {
@@ -77,6 +90,7 @@ export default function CoffeeStore(props: PropsType) {
         const findCoffeeStoreById = coffeeStores.find((coffeeStore) => {
           return coffeeStore.id.toString() === id; //dynamic id
         });
+        setCoffeeStore(findCoffeeStoreById);
         handleCreateCoffeeStore(findCoffeeStoreById);
       }
     } else {
@@ -84,16 +98,39 @@ export default function CoffeeStore(props: PropsType) {
     }
   }, [id, coffeeStores, props.coffeeShops]);
 
+  if (error) {
+    return (
+      <div className="w-full flex justify-center items-center">
+        Something went wrong retrieving coffee store page
+      </div>
+    );
+  }
+
   if (router.isFallback) {
     return (
       <div className="w-full flex justify-center items-center">Loading</div>
     );
   }
 
-  const { name, location, imgUrl } = props.coffeeShops;
+  const { name, location, imgUrl } = coffeeStore as coffeeShop;
 
-  const handleUpvote = () => {
-    console.log("upvote handled");
+  const handleUpvote = async () => {
+    try {
+      const response = await fetch("/api/upvoteCoffeeStore", {
+        method: "PUT",
+        body: JSON.stringify({
+          id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response) {
+        setCoffeeStoreVotes(coffeeStoreVotes + 1);
+      }
+    } catch (err) {
+      console.error("Error upvoting coffee store", err);
+    }
   };
 
   return (
@@ -118,11 +155,12 @@ export default function CoffeeStore(props: PropsType) {
               height={208}
               width={208}
               className="object-cover"
+              priority
             />
           </a>
         </div>
         <div className="mt-2 flex gap-2 items-center">
-          <Star size={20} /> 1
+          <Star size={20} /> {coffeeStoreVotes}
           <button
             className="bg-blue-600 rounded-full text-[0.8rem] p-1 hover:bg-blue-500 transition-all"
             onClick={handleUpvote}
