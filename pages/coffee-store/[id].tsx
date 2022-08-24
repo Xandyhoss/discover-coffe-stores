@@ -53,7 +53,9 @@ export default function CoffeeStore(props: PropsType) {
   const [coffeeStore, setCoffeeStore] = useState(props.coffeeShops || {});
 
   const fetcher = async (url) => await fetch(url).then((res) => res.json());
-  const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
+  const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher, {
+    refreshInterval: 1000,
+  });
 
   useEffect(() => {
     if (data && data.length > 0) {
