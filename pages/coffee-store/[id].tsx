@@ -114,7 +114,7 @@ export default function CoffeeStore(props: PropsType) {
     );
   }
 
-  const { name, location, imgUrl } = coffeeStore as coffeeShop;
+  const { name, location, imgUrl } = props.coffeeShops;
 
   const handleUpvote = async () => {
     try {
